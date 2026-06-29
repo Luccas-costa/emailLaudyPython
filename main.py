@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from email.message import EmailMessage
 import smtplib
 import os
+import socket
 
 app = FastAPI(title="Email API LaudyCardio")
 
@@ -65,11 +66,21 @@ async def enviar_email(
             filename=arquivo.filename
         )
 
+        print(socket.getaddrinfo(SMTP_HOST, SMTP_PORT))
+
         smtp = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
         smtp.starttls()
         smtp.login(SMTP_USER, SMTP_PASSWORD)
         smtp.send_message(msg)
+
+        smtp = smtplib.SMTP(
+    SMTP_HOST,  
+    SMTP_PORT,
+    timeout=20
+)
+
         smtp.quit()
+
 
         return {
             "sucesso": True
